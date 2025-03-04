@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="/search" method="post" class="search-form">
+        <input type="text" name="query" placeholder="Enter a keyword to search papers" required>
+        <input type="number" name="num_results" min="1" max="50" value="10" required>
+        <p style="font-size: 0.9em; color: #5a5a5a;">Specify the number of results to display (1-50). Default is 10.</p>
+        <button type="submit">Search</button>
+    </form>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/upload" style="color: #007bff; font-size: 1.2em;">Upload a PDF to Extract Metadata</a>
+    </div>
+{% endblock %}

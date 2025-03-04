@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .header {
+            background-color: #841b1b;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            font-size: 2.5em;
+            font-family: 'Georgia', sans-serif;
+        }
+        .header a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .search-form input[type="text"], .search-form input[type="number"] {
+            width: 80%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            background-color: #fff;
+        }
+        .search-form button {
+            padding: 12px 25px;
+            background-color: #a07878;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+        .result-list {
+            margin-top: 30px;
+            list-style: none;
+            padding-left: 0;
+        }
+        .result-list li {
+            background-color: white;
+            margin: 10px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-list li h3 {
+            margin: 0;
+            font-size: 1.3em;
+            color: #0000ff;
+        }
+        .result-list li p {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+        .result-list li a {
+            color: #466f9c;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .result-list li a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="{{ url_for('home') }}">Research Paper Analysis</a>
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

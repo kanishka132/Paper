@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 style="text-align: center; color: #343a40;">Extracted PDF Metadata</h1>
+    <ul style="list-style: none; padding: 0; max-width: 1300px; margin: 20px auto;">
+        <h2 style="color: #343a40; margin: 10px 0; background-color: #f4f6f9; padding: 15px; border-radius: 5px;">
+            <strong>Title:</strong> {{ metadata.title }}
+        </h2>
+        <li style="margin: 10px 0; background-color: #f4f6f9; padding: 15px; border-radius: 5px;">
+            <strong>Abstract:</strong> {{ metadata.abstract }}
+        </li>
+        <li style="margin: 10px 0; background-color: #f4f6f9; padding: 15px; border-radius: 5px;">
+            <strong>Keywords:</strong> {{ metadata.keywords }}
+        </li>
+        <li style="margin: 10px 0; background-color: #f4f6f9; padding: 15px; border-radius: 5px;">
+            <strong>References:</strong>
+            <ul>
+                {% for reference in metadata.references %}
+                    <li>{{ reference }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
+    <div style="width: 50%; padding-left: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
+        {% if wordcloud_image %}
+            <h2 style="text-align: center; color: #343a40;">Keyword Cloud</h2>
+            <div style="text-align: center;">
+                <img src="{{ url_for('static', filename='wordcloud.png') }}" alt="Keyword Cloud" style="max-width: 200px; height: 200px;">
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Summary Section -->
+    <div style="margin-top: 50px;">
+        <h2>Summary in Key Points:</h2>
+        <ul>
+            {% for point in summary %}
+                <li>{{ point }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Trend Visualization -->
+    <div style="margin-top: 50px;">
+        <h2>Trend Identification for Keywords</h2>
+        <div id="trend-charts" style="display: flex; flex-wrap: wrap; gap: 20px;">
+            {% for trend in trends_data %}
+                <div style="width: 100%; max-width: 400px; padding: 10px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+                    <h3 style="text-align: center;">Keyword: "{{ trend['keyword'] }}"</h3>
+                    <div id="chart-{{ loop.index }}" style="width: 100%; height: 300px;"></div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div style="margin-top: 50px;">
+        <h2>Keyword-to-Reference Mapping</h2>
+        <ul>
+            {% for keyword, ref_list in keyword_reference_map.items() %}
+                <li><strong>{{ keyword }}</strong>:
+                    <ul>
+                        {% for ref in ref_list %}
+                            <li>{{ ref }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const trendsData = JSON.parse('{{ trends_data | tojson | safe }}');
+    
+        // Render charts for each keyword trend
+        trendsData.forEach((trend, idx) => {
+            // Sort the data by year in descending order
+            const data = trend.year_counts.sort((a, b) => b.Year - a.Year);
+
+    
+            // Set up SVG dimensions
+            const margin = { top: 30, right: 30, bottom: 70, left: 50 }; // Increased bottom margin for slanted labels
+            const width = 350 - margin.left - margin.right;
+            const height = 250 - margin.top - margin.bottom;
+    
+            const svg = d3.select(`#chart-${idx + 1}`)  // This is where the charts will be rendered
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    
+            // Set up scales
+            const x = d3.scalePoint()
+                .domain(data.map(d => d.Year))
+                .range([0, width])
+                .padding(0.5);
+    
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Count)])
+                .range([height, 0]);
+    
+            // Add axes
+            svg.append("g")
+                .attr("transform", `translate(0, ${height})`)
+                .call(d3.axisBottom(x))
+                .selectAll("text") // Select all x-axis labels
+                .style("text-anchor", "end") // Align text to the end of each tick
+                .attr("transform", "rotate(-45)") // Rotate labels by -45 degrees
+                .attr("dx", "-0.5em") // Adjust horizontal positioning
+                .attr("dy", "0.2em"); // Adjust vertical positioning
+    
+            svg.append("g")
+                .call(d3.axisLeft(y));
+    
+            // Add the line
+            svg.append("path")
+                .datum(data)
+                .attr("fill", "none")
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 2)
+                .attr("d", d3.line()
+                    .x(d => x(d.Year))
+                    .y(d => y(d.Count))
+                );
+    
+            // Add circles for data points
+            svg.selectAll(".dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", d => x(d.Year))
+                .attr("cy", d => y(d.Count))
+                .attr("r", 4)
+                .attr("fill", "orange");
+        });
+    </script>
+{% endblock %}

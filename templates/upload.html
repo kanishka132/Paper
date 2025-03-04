@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 style="text-align: center; color: #343a40;">Upload a PDF File</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data" style="text-align: center; margin-top: 20px;">
+        <input type="file" name="file" accept=".pdf" style="margin-bottom: 20px;">
+        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px;">Upload</button>
+    </form>
+{% endblock %}

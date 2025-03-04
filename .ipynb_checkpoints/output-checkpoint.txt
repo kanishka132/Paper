@@ -1,0 +1,489 @@
+XXX -X-XXXX- XXXX -X/XX/$XX.00 ©20XX IEEE Size Analysis of Brain Tumor from MRI Images 
+Using MATLAB 
+ 
+G. Kanishka Reddy      
+Dept of Electronics and 
+Communication Engineering 
+SRM University AP 
+Guntur, India  
+kanishka_reddy@srmap.edu.in  Bh.Akanksha Sahitya 
+Dept of Electronics and 
+Communication Engineering 
+SRM University AP 
+Guntur, India 
+akanksha_sahitya@srmap.edu.in Anirban Ghosh 
+Dept of Electronics and 
+Communication Engineering 
+SRM University AP 
+Guntur, India 
+anirban.g@srmap.edu.in
+Abstract— Medical image processing has gained a lot of 
+relevance of late and is turning out to be a boon in different 
+clinical aspects. One such emerging field is brain tumor 
+detection from magnetic resonance images (MRI) of brain . 
+Engineers are actively developing tools to process medical 
+images and aid doctors in with their diagnosis. MRI images are 
+clinical images which are obtained on a computer when a 
+patient goes through MRI scanning done by a respective 
+machine. A brain tumor is a cluster of an abnormal mass of 
+tissue where cell growth is out of control due to an abnormality 
+in the mechanisms that control normal cells. In this work, our 
+main aim is to measure the size of a brain tumor in terms of its 
+diameter and area from a patient's MRI imagery using 
+MATLAB. The proposed method incorporates different layers 
+of noise removal techniques to clean up the images as well as 
+image segmentation and morphological operations for 
+detection and extraction of tumors and determining their size. 
+By measuring the size of the tumor in a patient's brain at 
+regular intervals doctors can diagnose the severity of the tumor 
+in a patient's brain and can administer suitable treatment 
+before it gets malignant. 
+Keywords — Tumor, MRI, segmentation, MATLAB, 
+extraction 
+I. INTRODUCTION 
+ 
+ A brain tumor also known as neoplasm is an abnormal 
+and excessive growth of cells that can have severe effects on 
+the brain and its functionality. Brain tumors can be primary 
+or metastatic, which are spread from other parts of the body 
+to the brain [1 ]. It can be cancerous medically termed as 
+malignant tumors or non-cancerous medically termed benign 
+tumors [2]. Common symptoms of brain tumors are 
+headache and nausea. Brain tumors are treatable and in non-
+cancerous cases can be completely cured, without causing 
+serious health issues, if diagnosed in the early stages. 
+Imaging and early detection of the severity of the lesion thus 
+becomes crucial for doctors to diagnose and treat brain 
+tumors.  
+The neoplasm in a suspected patient can be detected 
+either by magnetic resonance imaging (MRI) or Computed 
+Tomography (CT) [3]. In CT scan, the scanner captures 
+several X-ray images taken from different angle and then 
+combines them together to produce a cross-sectional image 
+of the brain. In comparison MRI scanner produces high 
+quality images using magnetic field and radio waves and is 
+often preferred for anatomical analysis of brain development 
+and its abnormality [4]. However, the MRI images of the 
+brain depicts not only the tumor but also grey and white 
+matter, cerebrospinal fluid , skull tissues present in the brain 
+along with any noise associated during scanning [5].  In our current study, we thus use MRI images of the brain  
+to extract and detect the size of lesion in a fast, effective, and  
+accurate way by using different image processing techniques . 
+In our proposed method we use the MATLAB image 
+processing toolbox, to clean up the noisy image, use different 
+segmentation method and perform different morphological 
+operation to find out the diameter and area of the abnormal  
+tissue growth which can serve as a crucial indicator of the 
+severity of the neoplasm for the doctors. 
+The rest of the paper is arranged as follows – section II 
+lists down the various related works, whereas section III 
+describes the various stages in our proposed method. Section 
+IV elaborates on the proposed algorithm and presents the 
+result of our work as well. The paper is finally concluded in  
+section V along with some future directions.  
+II.  RELATED WORKS 
+ 
+Back in 2001, Sin et al [6], proposed an entropy based image 
+segmentation technique for gray scale images by measuring 
+the resemblance between an arbitrary template and the 
+underlying true scene that gives rise to the actual image in 
+terms of an index called the Gray – Scale Image Entropy 
+(GIE). In recent times, researchers have proposed various 
+such approaches in image segmentation for tumor extraction 
+from MRI images of brain. In [7] the authors used differe nt 
+feature extraction and image segmentation techniques such 
+as Canny edge detection and adaptive threshold approach for 
+identification of tumor from a brain MRI and then uses 
+neural network technique for image classification into benign  
+and malignant based on an image set of only 102 clinical 
+images. In [8] the authors used modified histogram 
+equalization followed by morphological operation to extract 
+tumor from MRI images more efficiently. A simple machine 
+learning classifier was also used for image classification. In 
+[9] k – means and fuzzy – c means clustering techniques 
+were used for color based image segmentation and tumor 
+detection. In [ 10] Yogita et al, also used k – means clustering 
+method and watershed segmentation techniques to find the 
+radius and area of the tumor but their implementation did n ot 
+involve any noise removal stage which will be a crucial 
+feature in our proposed method. In [1] – [2] and [11 ] – [12] 
+authors have used a similar image processing structure of 
+noise removal from image, image segmentation followed by 
+morphological operation to detect or extract the tumor from 
+an MRI image, but the size has not been calculated in any of 
+mentioned work which could be instrumental in determining 
+the severity of the lesion. In more recent works [ 13] – [15] 
+the focus has been in classification of brain tumor usin g 
+brain MRI . As is evident in most of the methods tumor IEEE - 51525
+12th ICCCNT 2021 
+July 6-8, 2021 - IIT - Kharagpur 
+Kharagpur, India 
+2021 12th International Conference on Computing Communication and Networking Technologies (ICCCNT) | 978-1-7281-8595-8/21/$31.00 ©2021 IEEE | DOI: 10.1109/ICCCNT51525.2021.9579668
+Authorized licensed use limited to: SRM University. Downloaded on March 15,2022 at 03:08:01 UTC from IEEE Xplore.  Restrictions apply. 
+extraction or classification has been the focus. In our 
+proposed model we are not only proposing a tumor 
+extraction technique but also means to determine it ’s size and 
+area which to the best of our knowledge can prove to be 
+instrumental in tracking the progress of the tumor or 
+recuperation of a certain patient in case of early diagnosis. I n 
+the following section each of the image processing stages 
+required for tumor extraction followed by size determinatio n 
+in our model are elaborated. 
+ 
+III. METHODOLOGY 
+ 
+The algorithm has three stages, the first being pre-processing 
+of the MRI image followed by segmentation and performing 
+morphological operations, finally finding the brain tumor’s 
+size from the extracted images. The steps of the algorithm 
+are as follows[2]:-  
+1) MRI image of the brain given as input. 
+2) Conversion of MRI image into a grayscale image.  
+3) Application of high pass filter for noise removal 
+followed by median filter for image enhancement.  
+4) Application of threshold segmentation for conversion 
+to binary image .  
+5) Application of watershed segmentation to 
+distuinguish between similar regions of interest. 
+6) Application of morphological operation for tumor 
+extraction .  
+7) Analyse the size and area of the extracted tumor. 
+ 
+ 
+ 
+Fig 1. The workflow of the proposed method 
+A. Converting to grayscale image 
+The imported MRI image is given as input to the 
+algorithm. Then it is converted into a grayscale image. 
+Normally when MRI images are looked at through a 
+computer they appear like black and white images. The 
+illusion of gray shad es in an image is created by presenting 
+the image as a grid of black pixels in a sea of white ones or 
+vice versa, where it is the size of the dots that determine the 
+apparent intensity of gray in its neighbourhood. In general, 
+the black dots are represented by R = G = B = 0 or 
+00000000, whereas the white ones by R = G = B = 255 or 
+11111111. As is known black signifies the darkest shade, 
+occurring due to total absence of transmitted or reflected 
+light while white results from the presence of transmitted or 
+reflect ed light at all visible wavelengths and is considered as 
+the lightest shade [2]. This is the justification for grayscale 
+conversion. B. High pass filter and Median filter 
+     The grayscale image is next passed through a high pass 
+filter. The purpose of the high pass filter is to allow the high 
+frequency information of an image to pass while 
+suppressing the low frequency portion . In comparison to 
+low pass filter a high pass filter sharpens the image and 
+reduces the noise by using different convolution kernel. The 
+noise reduction by the kernel of a high pass filter is done by 
+improving the brightness of the central pixels in comparison 
+to its surrounding ones. In the subsequent step the high pass 
+filtered image is passed through a median filter which is a 
+nonlinear digital filter that can provide further reduction in 
+noise. The main concept of applying a median filter is to 
+scan through the incoming signal sequentially , replacing 
+each element of the input signal with the median of the 
+surrounding elements . The combined effect of the two filters 
+improves the quality of the MRI images. 
+C. Threshold Segmentation 
+      Then threshold segmentation is performed over the 
+filtered image. This method is used to convert grayscale 
+images to binary images. Segmentation is a method of 
+dividing a digital image into multiple segments. Threshold 
+segmentation mainly depends on the threshold value to 
+segment an image. The key purpose of this segmentation is 
+to modify an image representation into a simpler format 
+such that it eases the analysis and further processing of the 
+image. The major purpose of using image segmentation is to 
+identify an objects or certain boundaries. The input to a 
+thresholding operation is normally either a grayscale or a “A 
+high speed parallel fuzzy c-mean algorithm for brain tumour 
+segmentation” color image. In image segmentation pixels 
+that are similar in color, intensity or texture are labeled as 
+one for better visualization. In the simplest implementation, 
+the output could be a binary image representing the 
+segmentation. Black pixels correspond to the background 
+while white pixels correspond to the foreground (or vice 
+versa) [ 13] creating a segmented image. Conversion into 
+black and white pixels results in isolation of the tumor. 
+D. Watershed Segmentation  
+      Thresholding has a high speed of operation and is easy 
+to implement. However, its performance is relatively limited 
+since image pixels having the same gray level value will 
+indefinitely be segmented into the same set [6]. Hence, in 
+addition to threshold segmentation, watershed segmentation 
+is necessary. Watershed segmentation is a region-based 
+technique which utilizes image morphology. It is used for 
+separating the different segments in the image, when two 
+regions of interest are close to each other i.e., if their edges 
+touch. A simple watershed transformation causes over 
+segmentation without preprocessing of the image i.e., image 
+enhancement and noise removal [ 14]. As preprocessing has 
+already been done in the earlier steps, over segmentation 
+issue can be avoided. For gray scale images Meyer's 
+flooding Watershed Algorithm is used. It requires selection 
+of at least one marker interior to each object of the image, 
+where the flooding shall start. The markers are chosen by an 
+operator or, are provided by an automatic procedure that 
+considers the application-specific knowledge of the object 
+[15]. Now, the pixels neighboring the markers are placed in 
+IEEE - 51525
+12th ICCCNT 2021 
+July 6-8, 2021 - IIT - Kharagpur 
+Kharagpur, India Authorized licensed use limited to: SRM University. Downloaded on March 15,2022 at 03:08:01 UTC from IEEE Xplore.  Restrictions apply. 
+a queue as per the priority of the gray levels of the pixel and 
+are labeled accordingly. 
+E. Morphological Operations 
+      Morphological operation is performed to get the final 
+tumor region. These are especially used to generate a new 
+binary image from the existing one by incorporating non – 
+zero value in a pixel either by testing whether the pixel fits 
+in a given neighborhood or it intersects the same. As 
+morphological operations solely depend on the relative 
+sequencing of pixel values and not on their absolute 
+numerical values it is better suited to the processing of 
+binary images. A small matrix of pixels consisting of zeros 
+and ones represent a structuring element within the image. 
+The dimension of such a matrix represents the scale of the 
+structuring element whereas the pattern of ones and zeros in 
+the matrix provides the shape of the structuring element. 
+The origin of the structuring element is normally one of the 
+pixels in the matrix but is often times found outside the 
+structuring element as well. At the end, the tumor is 
+extracted from the MRI image. 
+F. Size of extrcated tumor 
+      Regionprops is used to measure properties of image 
+regions in image processing. This function provides us with 
+a tool ‘MajorAxisLength’ which can be used to measure the 
+diameter of the tumor. To find the area, nnz matrix (number 
+of non-zero matrix elements) is to be used which gives the 
+area of the white region i.e., tumor region in terms of 
+number of pixels. However, the size obtained would make 
+more sense if it is expressed in terms of more traditional 
+units such as millimeter. Finally, the size of the tu mor 
+region is obtained as the result. The pixeled values can be 
+converted into our required units i.e., millimeters using 
+spatial calibration technique. This technique uses a spatial 
+calibration factor which is original pixels of the image per 
+millimeter (pixelpermm). The size of image we get in pixels 
+is divided with calibration factor as shown in eq. (1) to get 
+the results in millimeters. 
+ 
+                               𝑙𝑚𝑚 =𝑙𝑝𝑖𝑥
+𝛾                                            (1) 
+ 
+where, 𝑙𝑚𝑚 is the length of the lesion in millimeter, 𝑙𝑝𝑖𝑥 is 
+the length of the tumor in number of pixels and 𝛾 is the 
+calibration factor. 
+ 
+ 
+ 
+Fig 2. Sample Brain MRI image 
+ 
+IV. ALGORITHM AND RESULTS  
+The dataset in [ 16] is used for the implementation of the 
+current work. The algorithm of the proposed method can be 
+described as follows 
+ 
+        
+ 
+Fig 3. Gray scale image 
+ 
+Step I: MRI image as shown in fig. 2 is first imported into 
+MATLAB. 
+Step II: The selected MRI image is converted to grayscale 
+using im2gray() function as shown in fig. 3. 
+ 
+        
+ 
+                   Fig 4. Image after passing through high pass filter 
+ 
+Step III: The gradient magnitude method is used for 
+detecting the sharp edges which is used later for 
+segmentation of image.  
+ 
+ 
+ 
+       Fig 5. Image after Threshold Segmentation 
+ 
+IEEE - 51525
+12th ICCCNT 2021 
+July 6-8, 2021 - IIT - Kharagpur 
+Kharagpur, India Authorized licensed use limited to: SRM University. Downloaded on March 15,2022 at 03:08:01 UTC from IEEE Xplore.  Restrictions apply. 
+Step IV: The pre – processed image is passed through a high 
+pass filter to remove the noise. The image looks dull after 
+passing through HPF as shown in fig. 4, so to improve the 
+quality of the image a median filter is used. imshow() 
+displays the binary image. For binary images, imshow () 
+displays pixels with the value 0 (zero) as black and 1 as 
+white.  
+ 
+ 
+ 
+      Fig 6. Image after Watershed Segmentation        
+          
+Step V: Now a threshold value of 0.6 is used for threshold 
+segmentation. We use the im2bw() function with the 
+threshold value for threshold segmentation and output image 
+is shown in fig. 5.  
+ 
+ 
+ 
+Fig 7. Image after Morphological Operation 
+ 
+Step VI: Next for segmenting the different parts of the 
+image watershed segmentation is used. To do that, first  
+ 
+                   
+ 
+                              Fig 8. Snapshot showin g area and diameter of tumor. 
+ 
+watershed ridge lines are needed and then the watershed 
+transform is used for watershed segmentation. The label2rgb() function is further used to display a 
+distinguished colored image as in fig. 6.  
+Step VII: The morphological operations are further 
+performed on the watershed segmented image to reconstruct 
+the pixels creating a clear boundary of the final tumor region 
+as shown in fig. 7.  
+Step VIII: The size of the tumor is next measured in terms 
+of pixels by using the different size analysis and 
+measurement functions from the image processing toolbox 
+as explained in section III.     
+Step IX: The final step is determining the area and diameter 
+of the tumor in standard units (mm2 and mm respectively) 
+from the pixelated image of fig. 7 using the proper 
+calibration factor in eq. (1) as shown in command window 
+snapshot for a particular image in fig. 8 
+ 
+ 
+Table 1. Comparison of MRIs with different sized tumors 
+ 
+As a validation for our proposed method some MRI scans 
+with visually distinct sized tumors has been considered. The 
+diameter and area of the tumors in the different scans are 
+tabulated in table 1 for comparison and are calculated using 
+the algorithm elaborated in this section. It can be clearly 
+seen that smaller sized lesion in the second scan has smaller 
+diameter and area as is intuitively expected compared to 
+other samples. 
+ 
+V. CONCLUSION 
+ 
+An MRI dataset was collected, and different operations were 
+performed in MATLAB using the Image processing 
+toolbox. Different techniques have been used to enhance the 
+image quality so that extraction of the tumor region and the 
+results for size measurement of tumor are more efficient and 
+accurate. Observing the results of this project it has been 
+evident that it will be quite helpful to the doctors to get 
+accurate size of the tumor in terms of both diameter and area. 
+Knowing the size in two different parameters assures doctors 
+to carry forward with the required treatment as soon as 
+possible. Since it is a computer-aided method the results can 
+be considered quite accurate, reducing the chance of human 
+error. Thus, this technique can be considered significant for 
+brain tumor detection, extraction, and size analysis. Due to 
+paucity of data the current work is limited to determination 
+of tumor size and area only. However, in future 
+deliberations this method can be further extended in 
+classifying the tumor stage by analyzing the area of the 
+tumor and comparing it with pre-existing data of a particular 
+patient. Moreover, an analysis on change in tumor size over 
+time can also be done by plotting a graph using tumor 
+affected patients MRI images and determining the rate of 
+Input 
+Image 
+    
+Diameter 
+(in mm) 22.787  4.4 18.968  10.61 
+Area (in 
+mm^2) 1185.386  43.297 797.561  495.8 
+IEEE - 51525
+12th ICCCNT 2021 
+July 6-8, 2021 - IIT - Kharagpur 
+Kharagpur, India Authorized licensed use limited to: SRM University. Downloaded on March 15,2022 at 03:08:01 UTC from IEEE Xplore.  Restrictions apply. 
+change. The detection of such a rate of change in addition to 
+insights from the experts can prove to be a real boon in 
+diagnosis and treatment of brain tu mor. 
+ 
+REFERENCES 
+ 
+[1] Rabia Ijaz, Mohsin Jamil, S. O. Gilani, “ Brain Tumor Extraction from 
+MRI Images using MATLAB ”, International Journal of Multimedia 
+and Ubiquitous Engineering , Vol.12, No.12(2017), pp.1-6. 
+[2] Rajesh C. Patil, Dr. A. S. Bhalchandra, “Brain Tumo ur Extraction 
+from MRI Images Using MATLAB,” International Journal of 
+Electronics, Communication & Soft Computing Science a nd 
+Engineering  ISSN: 2277-9477, Volume 2, Issue 1 
+[3] S. Murugavalli, V. Rajamani, “A high speed parallel fuzzy c -mean 
+algorithm for brain tumour segmentation”, BIME Journal , Vol. no: 
+06, Issue (1), Dec., 2006. 
+[4] T. Logeswari and M. Karnan, “An improved implementatio n of brain 
+tumor detection using segmentation based on soft computing”, 
+Journal of Cancer Research and Experimental Oncology , vol. 2,no. 1, 
+(2009), pp. 006-014. 
+[5] SivaSankari S., Sindhu M., Sangeetha R. and Shenbag aRajan. 
+“Feature Extraction of Brain Tumor Using MRI.” in International 
+Journal of Innovative A Research in Science, Engineerin g and 
+Technology , 2014, 3(3): pp. 10281-6 
+[6] C. F. Sin and C. K. Leung, “Image segmentation by chan ging 
+template block by block,” in Proceedings of the IEEE Region 10th 
+International Conference on Electrical and Electronic Technology , 
+vol. 1, pp. 302 –305, China, August 2001. 
+[7] E. F. Badran, E. G. Mahmoud and N. Hamdy, "An algorith m for 
+detecting brain tumors in MRI images," The 2010 International 
+Conference on Computer Engineering & Systems , 2010, pp. 368-373, 
+doi: 10.1109/ICCES.2010.5674887.  
+[8] Ed-Edily Mohd. Azhari, Muhd. Mudzakkir Mohd. Hatta, Za w Zaw 
+Htike and Shoon Lei Win, “Brain Tumor Detection And L ocalization 
+In Magnetic Resonance Imaging”, International Journal of 
+Information Technology Convergence and Services (IJIT CS) Vol.4, 
+No.1, February 2014 
+[9] K. Sinha and G. R. Sinha, "Efficient segmentation method s for tumor 
+detection in MRI images," 2014 IEEE Students' Conference on Electrical, Electronics and Computer Science , 2014, pp. 1-6, doi: 
+10.1109/SCEECS.2014.6804437. 
+[10] Yogita Sharma, Parminder Kaur , “Detection and Extraction of Brain 
+Tumor from MRI Images Using K-Means Clustering and Water shed 
+Algorithms ”, International Journal of Computer Science Trends and 
+Technology (IJCST) , Volume 3 Issue 2,Mar-Apr 2015. 
+[11] Rina Bopche, Prof. Amit Kolhe, Dr. Pankaj Kumar Mish ra, “Brain 
+Tumour Extraction from MRI Images Using Image Processing”,  
+International Journal of Engineering and Techniques ,Volume 4 Issue 
+3, May – June 2018. 
+[12] Hrizi Olfa , “Brain Tumor Detection And Recognition F rom MRI 
+Scan”, International Journal Of Scientific & Technology Resea rch 
+Volume 9, Issue 02, February 2020. 
+[13] Kang J, Ullah Z, Gwak J. MRI-Based Brain Tumor Classificat ion 
+Using Ensemble of Deep Features and Machine Learning C lassifiers. 
+Sensors (Basel) . 2021;21(6):2222. Published 2021 Mar 22. 
+doi:10.3390/s21062222 
+[14] G. Garg and R. Garg, “Brain tumor detection and cla ssification based 
+onhybrid ensemble classifier,”CoRR, vol. abs/2101.00216 , 2021. 
+[Online].Available: https://arxiv.org/abs/2101.00216  
+[15] Yurong Guan, Muhammad Aamir, Ziaur Rahman, Ammara Ali, 
+Waheed Ahmed Abro, Zaheer Ahmed Dayo, Muhammad Shoaib 
+Bhutta, Zhihua Hu. A framework for efficient brain tu mor 
+classification using MRI images[J]. Mathematical Bioscience s and 
+Engineering, 2021, 18(5): 5790-5815. doi: 10.3934/mb e.2021292 
+[16] S. Jayaraman, S. Esakkirajan, T. Veerakumar, Digital Image 
+Processing, Tata McGraw Hill Education Private Limited,  2009 
+[17] P. R. Hill, C. N. Canagaraja h, and D. R. Bull, “Image  segmentation 
+using a texture gradient based watershed transform,” IEEE 
+Transactions on Image Processing , vol. 12, no. 12, pp. 1618 –1633, 
+2003. 
+[18] Jadwiga Rogowskia, “Overview and Fundamentals of Medical Image 
+Segmentation,” in Handbo ok of medical imaging, pp. 69-85, Elsevier 
+Inc., USA, 2000.  
+[19] MRI Dataset source - 
+https://figshare.com/articles/dataset/brain_tumor_da taset/1512427  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ IEEE - 51525
+12th ICCCNT 2021 
+July 6-8, 2021 - IIT - Kharagpur 
+Kharagpur, India Authorized licensed use limited to: SRM University. Downloaded on March 15,2022 at 03:08:01 UTC from IEEE Xplore.  Restrictions apply. 

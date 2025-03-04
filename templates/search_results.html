@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 style="text-align: center; color: #343a40;">Search Results for "{{ query }}"</h1>
+    
+    <!-- Container for the chart and keyword cloud -->
+    <div style="display: flex; gap: 20px; margin-top: 30px; justify-content: space-between;">
+        
+        <!-- Chart Section (50% width) -->
+        <div style="width: 50%; padding-right: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
+            {% if chart_data %}
+                <h2 style="text-align: center; color: #343a40;">Paper Distribution by Year</h2>
+                <div id="chart" style="width: 100%; height: 400px;"></div>
+                <script src="https://d3js.org/d3.v7.min.js"></script>
+                <script>
+                    const chartData = JSON.parse('{{ chart_data | tojson | safe }}');
+
+                    // Set up dimensions and margins
+                    const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+                    const width = 600 - margin.left - margin.right;
+                    const height = 400 - margin.top - margin.bottom;
+
+                    // Create an SVG container
+                    const svg = d3.select("#chart")
+                        .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+                    // Create scales
+                    const x = d3.scaleBand()
+                        .domain(chartData.map(d => d.Year))
+                        .range([0, width])
+                        .padding(0.1);
+
+                    const y = d3.scaleLinear()
+                        .domain([0, d3.max(chartData, d => d.Papers)])
+                        .range([height, 0]);
+
+                    // Add X axis
+                    svg.append("g")
+                        .attr("transform", `translate(0, ${height})`)
+                        .call(d3.axisBottom(x))
+                        .selectAll("text")
+                        .attr("transform", "translate(0, 5)")
+                        .style("text-anchor", "middle");
+
+                    // Add Y axis
+                    svg.append("g")
+                        .call(d3.axisLeft(y));
+
+                    // Add bars
+                    svg.selectAll(".bar")
+                        .data(chartData)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "bar")
+                        .attr("x", d => x(d.Year))
+                        .attr("y", d => y(d.Papers))
+                        .attr("width", x.bandwidth())
+                        .attr("height", d => height - y(d.Papers))
+                        .attr('fill', (d, i) => i % 2 === 0 ? 'grey' : 'orange'); // Alternating colors
+                </script>
+            {% endif %}
+        </div>
+
+        <!-- Keyword Cloud Section (50% width) -->
+        <div style="width: 50%; padding-left: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
+            {% if wordcloud_image %}
+                <h2 style="text-align: center; color: #343a40;">Keyword Cloud</h2>
+                <div style="text-align: center;">
+                    <img src="{{ url_for('static', filename='wordcloud.png') }}" alt="Keyword Cloud" style="max-width: 100%; height: 380px;">
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Papers List Section -->
+    <div style="margin-top: 40px;">
+        <ul class="result-list" style="max-height: 60vh; overflow-y: auto; padding-left: 0;">
+            {% if papers %}
+                {% for paper in papers %}
+                    <li style="background-color: white; margin: 10px 0; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+                        <h3><a href="{{ url_for('details', paper_id=loop.index0, query=query) }}" style="text-decoration: none; color: #352c91;">{{ paper.title }}</a></h3>
+                        <p><strong>Authors:</strong> {{ paper.authors }}</p>
+                        <p><strong>Keywords:</strong> {{ paper.keywords | join(', ') }}</p>
+                        <p><strong>Year:</strong> {{ paper.year }}</p>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p>No results found for your query. Please try again.</p>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Author Productivity Heatmap -->
+    <div style="background-color: white; margin-top: 50px; border: 2px solid #ccc; padding: 20px; border-radius: 10px;">
+        <!-- Title inside the box with reduced margin-bottom to decrease gap -->
+        <h2 style="text-align: center; margin-bottom: 10px;">Author Productivity</h2>
+        
+        <!-- Boxed chart area -->
+        <div id="author-heatmap" style="width: 100%; height: auto; margin-top: 0;"></div>
+        
+        <!-- Embed the Plotly chart using iframe with reduced margin-top -->
+        <iframe src="{{ url_for('static', filename='author_heatmap.html') }}" 
+                style="width: 100%; height: 500px; border: none; margin-top: 0;">
+        </iframe>
+    </div>
+
+
+
+
+{% endblock %}
