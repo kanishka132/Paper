@@ -9,3 +9,5 @@ paper_details.html: Shows detailed information for a selected paper.
 •	Python Files:  
 app.py: The main backend file for initializing the Flask app and defining routes.  
 extraction.py: Handles text and metadata extraction from uploaded PDFs.
+
+• **Instruction to run the code** - Use command python app.py to run the Flask app. This will serve the web app in your local machine(localhost).
